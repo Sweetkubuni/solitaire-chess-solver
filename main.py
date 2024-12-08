@@ -82,6 +82,23 @@ class Queen(ChessPiece):
         bishop_moves = Bishop(self.piece_id, self.col, self.row).available_movement(chessboard)
         return rook_moves | bishop_moves
 
+class Pawn(ChessPiece):
+    def available_movement(self, chessboard):
+        moves = set()
+        col_idx, row_idx = position_to_coordinates(self.col, self.row)
+
+        # Pawn's diagonal capture moves (upward direction)
+        potential_moves = [
+            (col_idx - 1, row_idx - 1),  # Up-left
+            (col_idx + 1, row_idx - 1)  # Up-right
+        ]
+
+        valid_moves = {coordinates_to_position(move) for move in potential_moves if 0 <= move[0] < 8 and 0 <= move[1] < 8}
+        return {piece.piece_id for piece in chessboard if (piece.col, piece.row) in valid_moves}
+
+    def __repr__(self):
+        return f"Pawn({self.piece_id}, '{self.col}', {self.row})"
+
 
 def SearchDFS(chess_pieces, record):
     for active_piece in chess_pieces:
